@@ -20,12 +20,16 @@ let init = co.wrap(function* () {
 
     if (!process.env.AWS_ACCESS_KEY_ID) {
         let cred = (yield awscred.loadAsync()).credentials;
-    
+
         process.env.AWS_ACCESS_KEY_ID = cred.accessKeyId;
         process.env.AWS_SECRET_ACCESS_KEY = cred.secretAccessKey;
-    
+
         console.log("AWS credentials loaded");
-      }
+        
+        if (cred.sessionToken) {
+            process.env.AWS_SESSION_TOKEN = cred.sessionToken;
+        }
+    }
 
     initialized = true;
 });

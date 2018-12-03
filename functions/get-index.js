@@ -40,6 +40,10 @@ function* getRestaurants() {
     process.env.AWS_SECRET_ACCESS_KEY = cred.secretAccessKey;
 
     console.log("AWS credentials loaded");
+
+    if (cred.sessionToken) {
+      process.env.AWS_SESSION_TOKEN = cred.sessionToken;
+    }
   }
 
   aws4.sign(opts);
