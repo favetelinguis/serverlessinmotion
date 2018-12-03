@@ -25,7 +25,6 @@ function* loadHtml() {
 
   return html;
 }
-
 function* getRestaurants() {
   let url = URL.parse(restaurantsApiRoot);
   let opts = {
