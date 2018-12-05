@@ -31,6 +31,9 @@ provider:
     - Effect: Allow
       Action: execute-api:Invoke
       Resource: arn:aws:execute-api:#{AWS::Region}:#{AWS::AccountId}:*/*/GET/restaurants
+    - Effect: Allow
+      Action: kinesis:PutRecord
+      Resource: arn:aws:kinesis:#{AWS::Region}:#{AWS::AccountId}:stream/order-events
 
 # you can overwrite defaults here
 #  stage: dev
@@ -76,6 +79,7 @@ functions:
       restaurants_api: https://rjelh2ebb7.execute-api.us-east-1.amazonaws.com/dev/restaurants
       cognito_user_pool_id: us-east-1_0TK77AD73
       cognito_client_id: 7naqa8mrp6g0hmq474th20i938
+      orders_api: https://rjelh2ebb7.execute-api.us-east-1.amazonaws.com/dev/orders
 
   
   search-restaurants:
@@ -85,7 +89,7 @@ functions:
           path: /restaurants/search
           method: post
           authorizer:
-            arn: arn:aws:cognito-idp:us-east-1:523286207272:userpool/us-east-1_0TK77AD73
+            arn: arn:aws:cognito-idp:#{AWS::Region}:#{AWS::AccountId}:userpool/us-east-1_0TK77AD73
     environment:
       restaurants_table: restaurants
 
@@ -98,6 +102,17 @@ functions:
           authorizer: aws_iam
     environment:
       restaurants_table: restaurants
+
+  place-order:
+    handler: functions/place-order.handler
+    events:
+      - http:
+          path: /orders
+          method: post
+          authorizer:
+            arn: arn:aws:cognito-idp:#{AWS::Region}:#{AWS::AccountId}:userpool/us-east-1_0TK77AD73
+    environment:
+      order_events_stream: order-events
 
 resources:
   Resources:
@@ -114,6 +129,13 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+    
+    orderEventsStream:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: order-events
+        ShardCount: 1
+
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details

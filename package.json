@@ -12,6 +12,7 @@
     "dependencies": {
         "awscred": "^1.4.2",
         "bluebird": "^3.5.3",
+        "chance": "^1.0.18",
         "co": "^4.6.0",
         "mustache": "^3.0.1",
         "superagent": "^4.0.0",
@@ -20,7 +21,6 @@
     "devDependencies": {
         "aws-sdk": "^2.361.0",
         "chai": "^4.2.0",
-        "chance": "^1.0.17",
         "cheerio": "^1.0.0-rc.2",
         "lodash": "^4.17.11",
         "mocha": "^5.2.0",
